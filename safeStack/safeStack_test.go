@@ -5,7 +5,7 @@ import (
 )
 
 func TestStackCreation(t *testing.T) {
-	s := NewSafeStack()
+	s := New()
 	if s.Len() != 0 {
 		t.Errorf("Failed, invalid stack length.")
 	}
@@ -14,7 +14,7 @@ func TestStackCreation(t *testing.T) {
 }
 
 func TestStackPushLength(t *testing.T) {
-	s := NewSafeStack()
+	s := New()
 	s.Push(14)
 	s.Push(42)
 	s.Push("testing")
@@ -30,7 +30,7 @@ func TestStackPushLength(t *testing.T) {
 func TestStackPushOrder(t *testing.T) {
 	var nv = 0
 	var ok = false
-	s := NewSafeStack()
+	s := New()
 	s.Push(16)
 	s.Push(32)
 	s.Push(64)
@@ -49,7 +49,7 @@ func TestStackPushOrder(t *testing.T) {
 }
 
 func TestSizeAfterPop(t *testing.T) {
-	s := NewSafeStack()
+	s := New()
 	s.Push(16)
 	s.Push("test")
 	s.Push("私は笑い男だ")
@@ -64,7 +64,7 @@ func TestSizeAfterPop(t *testing.T) {
 }
 
 func TestEmptyPop(t *testing.T) {
-	s := NewSafeStack()
+	s := New()
 	v := s.Pop()
 	if v != nil {
 		t.Errorf("Empty Pop got non-nil value")
@@ -73,7 +73,7 @@ func TestEmptyPop(t *testing.T) {
 }
 
 func TestEmptyPopWithValues(t *testing.T) {
-	s := NewSafeStack()
+	s := New()
 	s.Push("Thingy")
 	_ = s.Pop()
 	v := s.Pop()

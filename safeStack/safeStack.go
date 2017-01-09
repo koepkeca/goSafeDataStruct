@@ -51,7 +51,7 @@ func (s *SafeStack) Destroy() {
 //NewSafeStack creates a new Safe Stack, this also starts the go-routine
 //so once this is called, you need to clean up after yourself
 //by using the Destroy method.
-func NewSafeStack() (s *SafeStack) {
+func New() (s *SafeStack) {
 	s = &SafeStack{make(chan func(*stack))}
 	go s.loop()
 	return
