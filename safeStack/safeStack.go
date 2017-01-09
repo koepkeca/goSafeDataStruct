@@ -1,4 +1,4 @@
-//package safeStack implements a thread safe stack in go.
+//Package safeStack implements a thread safe stack in go.
 package safeStack
 
 //SafeStack is the structure that contains the channel used to
@@ -23,11 +23,13 @@ func (s *SafeStack) Pop() (v interface{}) {
 	s.op <- func(curr *stack) {
 		if curr.size == 0 {
 			vChan <- nil
+         	return
 		}
 		val := curr.top.value
 		curr.top = curr.top.next
 		curr.size--
 		vChan <- val
+		return
 	}
 	return <-vChan
 }
@@ -40,7 +42,7 @@ func (s *SafeStack) Push(v interface{}) {
 	}
 }
 
-//Destory closes the primary channel thus stopping
+//Destroy closes the primary channel thus stopping
 //the running go-routine.
 func (s *SafeStack) Destroy() {
 	close(s.op)

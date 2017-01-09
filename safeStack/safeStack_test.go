@@ -71,3 +71,14 @@ func TestEmptyPop(t *testing.T) {
 	}
 	s.Destroy()
 }
+
+func TestEmptyPopWithValues(t *testing.T) {
+	s := NewSafeStack()
+ 	s.Push("Thingy")
+	_ = s.Pop()
+	v := s.Pop()
+	if v != nil {
+		t.Errorf("Empty stack with values got non-nil value")
+	}
+	s.Destroy()
+}
