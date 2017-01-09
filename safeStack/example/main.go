@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	 //The GO Race detector can manage a max of 8192 concurrent routines.
+	//The GO Race detector can manage a max of 8192 concurrent routines.
 	//Read more about this here: https://golang.org/doc/articles/race_detector.html
 	nbrOfRoutines = 76654 //The GO Race detector can manage a max of 8192 concurrent routines.
 )
