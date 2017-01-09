@@ -23,7 +23,7 @@ func (s *SafeStack) Pop() (v interface{}) {
 	s.op <- func(curr *stack) {
 		if curr.size == 0 {
 			vChan <- nil
-         	return
+			return
 		}
 		val := curr.top.value
 		curr.top = curr.top.next

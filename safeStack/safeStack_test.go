@@ -74,7 +74,7 @@ func TestEmptyPop(t *testing.T) {
 
 func TestEmptyPopWithValues(t *testing.T) {
 	s := NewSafeStack()
- 	s.Push("Thingy")
+	s.Push("Thingy")
 	_ = s.Pop()
 	v := s.Pop()
 	if v != nil {
