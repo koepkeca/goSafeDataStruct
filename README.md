@@ -24,7 +24,7 @@ There are examples of each data structure in the examples folder for each data t
 # Data Types Supported
 Data Structure | Current Implementation Status | Unit Test Status | Benchmark Status
 -----------|-------------------------------|------------------|-------------------
-stack | yes | yes | no
-queue | no | no | no
+stack | yes | yes | yes
+queue | yes | yes | yes
 trie | no | no | no
 graph | no | no | no

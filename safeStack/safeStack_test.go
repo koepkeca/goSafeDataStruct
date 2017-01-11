@@ -82,3 +82,44 @@ func TestEmptyPopWithValues(t *testing.T) {
 	}
 	s.Destroy()
 }
+
+func BenchmarkEqualRWWithInt(b *testing.B) {
+	s := New()
+	write := false
+	for i := 0; i < b.N; i++ {
+		if s.Pop() == nil || write {
+			s.Push(i)
+		} else {
+			s.Pop()
+			write = true
+		}
+	}
+	s.Destroy()
+}
+
+func BenchmarkROnlyWithInt(b *testing.B) {
+	s := New()
+	nbr := b.N
+	for i := 0; i < nbr; i++ {
+		s.Push(i)
+	}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_ = s.Pop()
+	}
+	s.Destroy()
+}
+
+func BenchmarkWOnlyWithInt(b *testing.B) {
+	s := New()
+	for i := 0; i < b.N; i++ {
+		s.Push(i)
+	}
+	s.Destroy()
+}
+
+/*
+func BenchConcurrRW(b *testing.B) {
+	s := New()
+	b.RunParallel(func(pb *testing.PB) {
+*/

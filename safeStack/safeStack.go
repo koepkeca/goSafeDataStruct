@@ -48,7 +48,7 @@ func (s *SafeStack) Destroy() {
 	close(s.op)
 }
 
-//NewSafeStack creates a new Safe Stack, this also starts the go-routine
+//New creates a new Safe Stack, this also starts the go-routine
 //so once this is called, you need to clean up after yourself
 //by using the Destroy method.
 func New() (s *SafeStack) {

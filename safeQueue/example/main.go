@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/koepkeca/goSafeDataStruct/safeStack"
+	"github.com/koepkeca/goSafeDataStruct/safeQueue"
 )
 
 const (
@@ -13,16 +13,16 @@ const (
 )
 
 func main() {
-	S := safeStack.New()
+	S := safeQueue.New()
 	for i := 0; i < nbrOfRoutines; i++ {
 		go func(j int) {
-			S.Push(j)
+			S.Enqueue(j)
 		}(i)
 	}
 	fmt.Printf("%d elements", S.Len())
-	next := S.Pop()
+	next := S.Dequeue()
 	for next != nil {
 		fmt.Printf("%d\n", next.(int))
-		next = S.Pop()
+		next = S.Dequeue()
 	}
 }
