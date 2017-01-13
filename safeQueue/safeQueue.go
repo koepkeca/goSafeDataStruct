@@ -1,4 +1,4 @@
-//Package safeStack implements a thread safe queue in go.
+//Package safeQueue implements a thread safe queue in go.
 package safeQueue
 
 //SafeQueue is the structure that contains the channel used to
