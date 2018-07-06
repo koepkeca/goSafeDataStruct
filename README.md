@@ -26,5 +26,5 @@ Data Structure | Current Implementation Status | Unit Test Status | Benchmark St
 -----------|-------------------------------|------------------|-------------------
 stack | yes | yes | yes
 queue | yes | yes | yes
-trie | no | no | no
+trie | yes | yes | no
 graph | no | no | no
