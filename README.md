@@ -3,7 +3,7 @@
 # Overview
 
 goSafeDataStruct is a library which provides guarded data structures for use in concurrent applications.
-You can read more about the design and methodology of this library here. 
+[You can read more about the design and methodology of this library here.](https://www.carlkoepke.com/post/godatastruct/) 
 
 # Installation
 
