@@ -11,7 +11,7 @@ type SafeQueue struct {
 func (s *SafeQueue) Len() int64 {
 	lChan := make(chan int64)
 	s.op <- func(curr *queue) {
-		lChan <- curr.size
+		lChan <- int64(len(*curr))
 	}
 	return <-lChan
 }
@@ -20,16 +20,14 @@ func (s *SafeQueue) Len() int64 {
 func (s *SafeQueue) Dequeue() interface{} {
 	vChan := make(chan interface{})
 	s.op <- func(curr *queue) {
-		if curr.size == 0 {
+		if len(*curr) == 0 {
 			vChan <- nil
 			return
 		}
-		val := curr.head.value
-		if curr.size == 1 {
-			curr.tail = nil
-		}
-		curr.head = curr.head.next
-		curr.size--
+		old := *curr
+		n := len(old)
+		val := old[0]
+		*curr = old[1:n]
 		vChan <- val
 		return
 	}
@@ -39,14 +37,7 @@ func (s *SafeQueue) Dequeue() interface{} {
 //Enqueue places a new item at the end of the queue
 func (s *SafeQueue) Enqueue(v interface{}) {
 	s.op <- func(curr *queue) {
-		newElem := &elem{v, nil}
-		if curr.size == 0 {
-			curr.head = newElem
-		} else {
-			curr.tail.next = newElem
-		}
-		curr.tail = newElem
-		curr.size++
+		*curr = append(*curr, v)
 		return
 	}
 }
@@ -56,11 +47,12 @@ func (s *SafeQueue) Enqueue(v interface{}) {
 func (s *SafeQueue) Front() interface{} {
 	vChan := make(chan interface{})
 	s.op <- func(curr *queue) {
-		if curr.size == 0 {
+		if len(*curr) == 0 {
 			vChan <- nil
 			return
 		}
-		vChan <- curr.head.value
+		tmp := *curr
+		vChan <- tmp[0]
 		return
 	}
 	return <-vChan
@@ -71,11 +63,12 @@ func (s *SafeQueue) Front() interface{} {
 func (s *SafeQueue) Back() interface{} {
 	vChan := make(chan interface{})
 	s.op <- func(curr *queue) {
-		if curr.size == 0 {
+		if len(*curr) == 0 {
 			vChan <- nil
 			return
 		}
-		vChan <- curr.tail.value
+		tmp := *curr
+		vChan <- tmp[len(tmp)]
 		return
 	}
 	return <-vChan
@@ -96,18 +89,8 @@ func New() (s *SafeQueue) {
 	return
 }
 
-//stack is the basic container for the queue
-type queue struct {
-	head *elem
-	tail *elem
-	size int64
-}
-
-//elem is the element structure
-type elem struct {
-	value interface{}
-	next  *elem
-}
+//queue contains the queue represented as a slice of interfaces.
+type queue []interface{}
 
 //loop creates the guarded data structure and listens for
 //methods on the op channel. loop terminates when the op
