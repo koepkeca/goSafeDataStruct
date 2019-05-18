@@ -15,7 +15,7 @@ func (lk lexicalKeys) Len() int           { return len(lk) }
 func (lk lexicalKeys) Swap(i, j int)      { lk[i], lk[j] = lk[j], lk[i] }
 func (lk lexicalKeys) Less(i, j int) bool { return lk[i] < lk[j] }
 
-//SafeTrie is the sturcture that contains the channel used to
+//SafeTrie is the structure that contains the channel used to
 //communicate with the trie.
 type SafeTrie struct {
 	op chan (func(*trie))
@@ -58,12 +58,12 @@ func (t *SafeTrie) Get(k string) (v []interface{}, e error) {
 	t.op <- func(st *trie) {
 		curr := st.root
 		for _, char := range k {
-			if next, ok := curr.children[char]; !ok {
+			next, ok := curr.children[char]
+			if !ok {
 				ich <- nil
 				return
-			} else {
-				curr = next
 			}
+			curr = next
 		}
 		ich <- curr.data
 		return
@@ -111,7 +111,7 @@ func (n *trieNode) getDataBelow() (d []interface{}) {
 		d = append(d, n.data...)
 	}
 	tmpKeys := lexicalKeys{}
-	for k, _ := range n.children {
+	for k := range n.children {
 		tmpKeys = append(tmpKeys, k)
 	}
 	sort.Sort(tmpKeys)
@@ -129,17 +129,17 @@ func newNode() (n *trieNode) {
 }
 
 //loop is the method that runs the goroutine for the data structure
-func (s *SafeTrie) loop() {
-	t := &trie{}
-	t.root = newNode()
-	for op := range s.op {
-		op(t)
+func (t *SafeTrie) loop() {
+	core := &trie{}
+	core.root = newNode()
+	for op := range t.op {
+		op(core)
 	}
 }
 
 //Destroy stops the running go routine
-func (s *SafeTrie) Destroy() {
-	close(s.op)
+func (t *SafeTrie) Destroy() {
+	close(t.op)
 	return
 }
 

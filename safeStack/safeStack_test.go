@@ -28,13 +28,12 @@ func TestStackPushLength(t *testing.T) {
 }
 
 func TestStackPushOrder(t *testing.T) {
-	var nv = 0
-	var ok = false
 	s := New()
 	s.Push(16)
 	s.Push(32)
 	s.Push(64)
-	if nv, ok = s.Pop().(int); !ok {
+	nv, ok := s.Pop().(int)
+	if !ok {
 		t.Errorf("Failed, Pop got wrong type")
 		s.Destroy()
 		return

@@ -28,13 +28,12 @@ func TestQueueLength(t *testing.T) {
 }
 
 func TestQueueOrder(t *testing.T) {
-	var nv = 0
-	var ok = false
 	q := New()
 	q.Enqueue(16)
 	q.Enqueue(32)
 	q.Enqueue(64)
-	if nv, ok = q.Dequeue().(int); !ok {
+	nv, ok := q.Dequeue().(int); 
+	if !ok {
 		t.Errorf("Failed, Dequeue got wrong type")
 		q.Destroy()
 		return

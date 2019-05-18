@@ -24,6 +24,9 @@ func TestBasicRead(t *testing.T) {
 		td[i] = v
 	}
 	e := trie.Insert("testing", td)
+	if e != nil {
+		t.Fatal(e)
+	}
 	_, e = trie.Get("testing")
 	if e != nil {
 		t.Fatal(e)
@@ -120,7 +123,7 @@ func TestEmptyInvalidResult(t *testing.T) {
 	}
 	trie.Destroy()
 	trie = New()
-	trie.Insert("aaa",[]interface{}{"aaa"})
+	trie.Insert("aaa", []interface{}{"aaa"})
 	tmp = trie.Search("bbbbb")
 	if len(tmp) != 0 {
 		t.Fatalf("Trie search with no result obtained a result??")
