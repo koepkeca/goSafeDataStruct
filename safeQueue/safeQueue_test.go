@@ -32,7 +32,7 @@ func TestQueueOrder(t *testing.T) {
 	q.Enqueue(16)
 	q.Enqueue(32)
 	q.Enqueue(64)
-	nv, ok := q.Dequeue().(int); 
+	nv, ok := q.Dequeue().(int)
 	if !ok {
 		t.Errorf("Failed, Dequeue got wrong type")
 		q.Destroy()
