@@ -3,7 +3,17 @@ package safeTrie
 
 import (
 	"fmt"
+	"sort"
 )
+
+//lexicalKeys store the keys of a resulting depth search in lexical order.
+//this is useful for obtaining a lexically sorted list from a given prefix
+//search term. It implements the sort interface for a slice of runes.
+type lexicalKeys []rune
+
+func (lk lexicalKeys) Len() int           { return len(lk) }
+func (lk lexicalKeys) Swap(i, j int)      { lk[i], lk[j] = lk[j], lk[i] }
+func (lk lexicalKeys) Less(i, j int) bool { return lk[i] < lk[j] }
 
 //SafeTrie is the sturcture that contains the channel used to
 //communicate with the trie.
@@ -62,6 +72,27 @@ func (t *SafeTrie) Get(k string) (v []interface{}, e error) {
 	return
 }
 
+//Search makes a DFS Search for the term which begins with startAt
+//if it is blank, the entire trie will be returned as a lexically sorted
+//slice of interfaces.
+func (t *SafeTrie) Search(startAt string) []interface{} {
+	rch := make(chan []interface{})
+	t.op <- func(st *trie) {
+		curr := st.root
+		for _, char := range startAt {
+			next, ok := curr.children[char]
+			if !ok {
+				rch <- nil
+				return
+			}
+			curr = next
+		}
+		rch <- curr.getDataBelow()
+		return
+	}
+	return <-rch
+}
+
 //trie contains the locally available trie
 type trie struct {
 	root *trieNode
@@ -72,6 +103,22 @@ type trie struct {
 type trieNode struct {
 	data     []interface{}
 	children map[rune]*trieNode
+}
+
+//getDataBelow returns all of the data for all descendants of n
+func (n *trieNode) getDataBelow() (d []interface{}) {
+	if len(n.data) > 0 {
+		d = append(d, n.data...)
+	}
+	tmpKeys := lexicalKeys{}
+	for k, _ := range n.children {
+		tmpKeys = append(tmpKeys, k)
+	}
+	sort.Sort(tmpKeys)
+	for _, next := range tmpKeys {
+		d = append(d, n.children[next].getDataBelow()...)
+	}
+	return
 }
 
 //newNode is the method for creating a new node for the trie
