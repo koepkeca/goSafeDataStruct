@@ -11,7 +11,7 @@ type SafeStack struct {
 func (s *SafeStack) Len() (i int64) {
 	lChan := make(chan int64)
 	s.op <- func(curr *stack) {
-		lChan <- curr.size
+		lChan <- int64(len(*curr))
 	}
 	return <-lChan
 }
@@ -21,14 +21,15 @@ func (s *SafeStack) Len() (i int64) {
 func (s *SafeStack) Pop() (v interface{}) {
 	vChan := make(chan interface{})
 	s.op <- func(curr *stack) {
-		if curr.size == 0 {
+		old := *curr
+		n := len(old)
+		if n == 0 {
 			vChan <- nil
 			return
 		}
-		val := curr.top.value
-		curr.top = curr.top.next
-		curr.size--
-		vChan <- val
+		item := old[0]
+		*curr = old[1:n]
+		vChan <- item
 		return
 	}
 	return <-vChan
@@ -37,9 +38,10 @@ func (s *SafeStack) Pop() (v interface{}) {
 //Push will push the value v onto the stack.
 func (s *SafeStack) Push(v interface{}) {
 	s.op <- func(curr *stack) {
-		curr.top = &elem{v, curr.top}
-		curr.size++
+		*curr = append([]interface{}{v}, *curr...)
+		return
 	}
+	return
 }
 
 //Destroy closes the primary channel thus stopping
@@ -57,17 +59,8 @@ func New() (s *SafeStack) {
 	return
 }
 
-//stack is the basic container for the stack
-type stack struct {
-	top  *elem
-	size int64
-}
-
-//elem is the element structure
-type elem struct {
-	value interface{}
-	next  *elem
-}
+//We emulate a stack using an interface slice to reduce memory overhead
+type stack []interface{}
 
 //loop creates the guarded data structure and listens for
 //methods on the op channel. loop terminates when the op
