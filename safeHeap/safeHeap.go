@@ -19,7 +19,7 @@ func (s *SafeHeap) Len() (l int) {
 	return <-lch
 }
 
-//Push will insert the item into the heap 
+//Push will insert the item into the heap
 func (s *SafeHeap) Push(x interface{}) bool {
 	bch := make(chan bool)
 	s.op <- func(curr heap.Interface) {
@@ -27,7 +27,7 @@ func (s *SafeHeap) Push(x interface{}) bool {
 		bch <- true
 		return
 	}
-	return <- bch
+	return <-bch
 }
 
 //Pop removes the next value fom the heap
@@ -48,6 +48,12 @@ func (s *SafeHeap) Remove(idx int) interface{} {
 		return
 	}
 	return <-ich
+}
+
+//Destroy closes the primary channel stopping the running go routine.
+func (s *SafeHeap) Destroy() {
+	close(s.op)
+	return
 }
 
 //New creates a new heap that is safe for concurrent use from h
