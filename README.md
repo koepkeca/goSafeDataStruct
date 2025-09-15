@@ -1,5 +1,9 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/koepkeca/goSafeDataStruct)](https://goreportcard.com/report/github.com/koepkeca/goSafeDataStruct)
 
+# NOTICE:
+This package is deprecated and should no longer be used. Use [gsds](https://github.com/koepkeca/gsds) instead please. 
+This project is now read only and will no longer be updated.
+
 # Overview
 
 goSafeDataStruct is a library which provides guarded data structures for use in concurrent applications.
